@@ -3,7 +3,7 @@ import sys
 import threading
 import time
 
-import rsa
+from Crypto.PublicKey import RSA
 
 
 edge_value_range = 25
@@ -17,44 +17,59 @@ nodes = []
 class Node():
     # memory pool
     mem_pool = []
-    costs = []
     blocks = []
 
     def __init__ (self, id):
         #e ach node has an unique id
         self.id = id
-        self.public_key, self.private_key = rsa.newkeys(256)
-    
+        self.costs = [0 for i in range(len(nodes) + 1)]
 
-        for i in range(len(nodes)):
-            if i == id:
-                # each node has edge_val equal to 0 to itself
-                edge_val = 0
-            else:   
+        # generate a key pair for this node
+        self.key = RSA.generate(1024)
+        # self.public_key, self.private_key = rsa.newkeys(256)
+    
+        for num, node in enumerate(nodes):
+            print('num = {} and id = {}'.format(num, self.id))
+            if node.id == self.id:
+                self.costs[num] = 0
+            else:
                 edge_val = random.randint(1, edge_value_range + 1)
 
                 if edge_val < edge_value_range * prob:
                     
                     # set the edge value of this vertex
-                    self.costs[i] = edge_val
+                    self.costs[num] = edge_val
                     # append the edge value to the other vertex of the edge
-                    nodes[i].costs[self.id] = edge_val
+                    if len(node.costs) <= self.id:
+                        node.costs.append(self.id)
+                    else:
+                        node.costs[self.id] = edge_val
                 else:
-                    self.costs[i] = sys.maxsize
+                    # print(self.costs)
+                    self.costs[num] = sys.maxsize
                     
-                    # append the edge value to the other vertex of the edge
-                    nodes[i].costs[self.id] = sys.maxsize
+                    # append the edge value to the other vertex of the edge1
+                    # print(node.costs)
+                    if len(node.costs) <= self.id:
+                        node.costs.append(self.id)
+                    else:
+                        node.costs[self.id] = sys.maxsize
 
 
     def gossip(self, block):
-        for i in nodes:
-            thread = threading.Thread(target=i.receive, args=(block, self.costs[i])).start()
+        for num, i in enumerate(nodes):
+            print(f"\nnode {self.id} is gossiping with node {num}")
+            thread = threading.Thread(target=i.receive, args=(block, self.costs[num])).start()
         
 
 
     def receive(self, block, cost_needed):
         # It is just for the simulating the latency of the network
-        time.sleep(cost_needed * pace)
+        latency = int(cost_needed * pace)
+        print(f"\noverflow = {latency}\n ") #debug
+
+        if latency != 0:
+            time.sleep(latency)
 
         # append the received block to its blockchain
         self.blocks.append(block)
