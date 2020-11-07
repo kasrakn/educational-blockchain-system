@@ -5,7 +5,6 @@ import time
 
 from Crypto.PublicKey import RSA
 
-
 edge_value_range = 25
 # The probability of there is no edge between two nodes
 prob = 0.2
@@ -58,7 +57,7 @@ class Node():
 
     def gossip(self, block):
         for num, i in enumerate(nodes):
-            print(f"\nnode {self.id} is gossiping with node {num}")
+            print("\n\033[36;1m" + f"node {self.id} is gossiping with node {num}" + "\033[0m")
             thread = threading.Thread(target=i.receive, args=(block, self.costs[num])).start()
         
 
@@ -66,9 +65,9 @@ class Node():
     def receive(self, block, cost_needed):
         # It is just for the simulating the latency of the network
         latency = int(cost_needed * pace)
-        print(f"\noverflow = {latency}\n ") #debug
 
-        if latency != 0:
+        # this if placed just to prevent the overflow problem
+        if latency < 25:
             time.sleep(latency)
 
         # append the received block to its blockchain

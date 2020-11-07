@@ -1,11 +1,10 @@
 import random
 import threading
 
-import rsa
-
-from node import Node, pace, nodes
-from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA256
+from Crypto.Signature import PKCS1_v1_5
+
+from node import Node, nodes, pace
 
 
 def mine():
@@ -14,10 +13,9 @@ def mine():
     print(f'\nlucky = {luck_num}, len nodes = {len(nodes)}\n')
     lucky_node = nodes[luck_num]
 
-    print("\nCongratulations to node {} for being our next minner".format(lucky_node.id))
+    print("\n\033[32;1m" + f"Congratulations to node {lucky_node.id} for being our next minner" + "\033[0m")
 
     # lucky node signs the block with its private key
-    # block = rsa.sign(lucky_node.mem_pool, lucky_node.private_key, hash_method='SHA-256')
     hasher = SHA256.new(bytes(lucky_node.mem_pool))
     signer = PKCS1_v1_5.new(lucky_node.key)
     block = signer.sign(hasher)
