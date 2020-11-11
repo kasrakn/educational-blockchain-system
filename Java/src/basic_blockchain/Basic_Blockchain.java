@@ -18,11 +18,6 @@ public class Basic_Blockchain {
             Node node = new Node(id);
         }
         
-        for (Node node : Parameters.nodes) {
-            for (int i = 0; i < node.costs.size(); i++)
-                System.out.println("NodeID: " + node.id + " " + i + " " + node.costs.get(i));
-        }
-        
         int period = (int)Math.ceil(Parameters.period_calculator());
         Runnable mine_runnable = () -> {
             try {
@@ -33,5 +28,24 @@ public class Basic_Blockchain {
         };
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
         exec.scheduleAtFixedRate(mine_runnable, 0, period, TimeUnit.SECONDS);
+        
+        Runnable transact_runnable = () -> {
+            try {
+                Parameters.transact();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Basic_Blockchain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        };
+        ScheduledExecutorService transact_runner = Executors.newScheduledThreadPool(1);
+        exec.scheduleAtFixedRate(transact_runnable, 0, Parameters.transaction_rate, TimeUnit.SECONDS);
+        
+        while(true){
+            Thread.sleep(5000);
+            System.out.println("Next round!!!");
+            
+            for(Node node: Parameters.nodes)
+                node.update_distances();
+        }
     }   
 }
