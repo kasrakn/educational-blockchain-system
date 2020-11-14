@@ -27,7 +27,7 @@ def mine():
             signer = PKCS1_v1_5.new(lucky_node.key)
             block = signer.sign(hasher)
             sem.release()
-            
+
             # now the lucky node start gossiping to other nodes
             th = threading.Thread(target=lucky_node.gossip, args=(block, 1))
             th.start()
@@ -46,7 +46,7 @@ def transact():
         # the transaction is stored as a string
         transaction = f"node {sender.id} sent {amount} ----> node{receiver.id}"
 
-        # in order to prevent the synchronization problems when accessing the 
+        # in order to prevent the synchronization problems when accessing the
         # the variables that can be changed by different threads simultaneously
         while not sem.acquire(blocking=False):
             pass
@@ -57,7 +57,7 @@ def transact():
             receiver.coin += amount
             receiver.mem_pool.append(transaction)
 
-            print("\033[34;1m" + f"a transaction has been occured between node {sender.id} and {receiver.id}" + "\033[0m")
+            print("\033[34;1m" + f"a transaction has been occurred between node {sender.id} and {receiver.id}" + "\033[0m")
 
             sem.release()
 
@@ -73,7 +73,7 @@ def transact():
             tr.join()
             # signal the semaphore
     else:
-        print("\033[35;1m" + "Iligal transaction" + "\033[0m")
+        print("\033[35;1m" + "Illegal transaction" + "\033[0m")
 
 
 
@@ -98,4 +98,3 @@ if __name__ == "__main__":
         print("\033[31;1m" + "new node added" + "\033[0m")
         for i in nodes:
             i.update_costs()
-            # threading.Thread(target=i.update_costs).start()
