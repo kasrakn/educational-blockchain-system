@@ -10,14 +10,14 @@ import java.util.logging.Logger;
 
 public class Basic_Blockchain {
     public static void main(String[] args) throws Exception {
-   
+
         Scanner scan = new Scanner(System.in);
         System.out.print("Please enter the initial number of nodes: ");
         int nodes_number = scan.nextInt();
         for(int id = 0; id < nodes_number; id++){
             Node node = new Node(id);
         }
-        
+
         int period = (int)Math.ceil(Parameters.period_calculator());
         Runnable mine_runnable = () -> {
             try {
@@ -28,28 +28,28 @@ public class Basic_Blockchain {
         };
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
         exec.scheduleAtFixedRate(mine_runnable, 0, period, TimeUnit.SECONDS);
-        
+
         Runnable transact_runnable = () -> {
             try {
                 Parameters.transact();
             } catch (InterruptedException ex) {
                 Logger.getLogger(Basic_Blockchain.class.getName()).log(Level.SEVERE, null, ex);
-            }    
+            }
         };
         ScheduledExecutorService transact_runner = Executors.newScheduledThreadPool(1);
         transact_runner.scheduleAtFixedRate(transact_runnable, 0, Parameters.transaction_rate, TimeUnit.SECONDS);
-        
+
         Lock lock = new Lock();
         while(true){
-            Thread.sleep(10000);
+            Thread.sleep(12000);
             System.out.println("Next round!!!");
             lock.lock();
             new Node((Parameters.nodes.size()));
             for(Node node: Parameters.nodes)
                 node.update_distances();
-            
+
             Parameters.print_distances();
             lock.unlock();
         }
-    }   
+    }
 }
