@@ -34,18 +34,22 @@ public class Basic_Blockchain {
                 Parameters.transact();
             } catch (InterruptedException ex) {
                 Logger.getLogger(Basic_Blockchain.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+            }    
         };
         ScheduledExecutorService transact_runner = Executors.newScheduledThreadPool(1);
-        exec.scheduleAtFixedRate(transact_runnable, 0, Parameters.transaction_rate, TimeUnit.SECONDS);
+        transact_runner.scheduleAtFixedRate(transact_runnable, 0, Parameters.transaction_rate, TimeUnit.SECONDS);
         
+        Lock lock = new Lock();
         while(true){
-            Thread.sleep(5000);
+            Thread.sleep(10000);
             System.out.println("Next round!!!");
-            
+            lock.lock();
+            new Node((Parameters.nodes.size()));
             for(Node node: Parameters.nodes)
                 node.update_distances();
+            
+            Parameters.print_distances();
+            lock.unlock();
         }
     }   
 }

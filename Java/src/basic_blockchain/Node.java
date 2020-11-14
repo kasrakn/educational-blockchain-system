@@ -10,54 +10,55 @@ import java.util.logging.Logger;
 
 public class Node {
     String memory_pool;
-    Map<Integer, Integer> costs;
+    Map<Integer, Integer> distances;
     ArrayList<String> blocks; 
-    ArrayList<String> pre_events;
+    ArrayList<String> pre_events; // This will be used to prevents stucking in loops while gossiping/recieving
     final int id;
-    KeyPair keys;
+    KeyPair keys; // Inculdes a private key and a public key
     int coins;
-    Random random;
     
     public Node(int id) throws Exception{
-        System.out.println("Node " + id + " is being initialized...");
         this.id = id;
         keys = RSA.generateKeyPair();
         memory_pool = new String();
-        this.costs = new HashMap<>(); 
+        this.distances = new HashMap<>(); 
         this.blocks = new ArrayList();
         this.pre_events = new ArrayList();
         Parameters.nodes.add(this);
-        random = new Random();
+        Random random = new Random();
         this.coins = 1000;
         
         for(int i = 0; i < Parameters.nodes.size(); i++){
             int edge_dist;
             edge_dist = 1+random.nextInt(Parameters.edge_value_range);
             
-            if(edge_dist <= Parameters.edge_value_range*Parameters.prob){
-                Parameters.nodes.get(this.id).costs.put(i, edge_dist);
-                Parameters.nodes.get(i).costs.put(this.id, edge_dist);
+            if(edge_dist <= Parameters.edge_value_range*Parameters.prob){ // Make an edge between this node and node[i]
+                Parameters.nodes.get(this.id).distances.put(i, edge_dist);
+                Parameters.nodes.get(i).distances.put(this.id, edge_dist);
             }
             else{
-                Parameters.nodes.get(this.id).costs.put(i, Integer.MAX_VALUE);
-                Parameters.nodes.get(i).costs.put(this.id, Integer.MAX_VALUE);
+                Parameters.nodes.get(this.id).distances.put(i, Integer.MAX_VALUE);
+                Parameters.nodes.get(i).distances.put(this.id, Integer.MAX_VALUE);
             }
-            this.costs.put(this.id, 0);
+            this.distances.put(this.id, 0);
         }
+        System.out.println("Node " + id + " has been initialized...");
     }
 
     public Node getNode(){
         return this;
     }
     
-    public void gossip(String block, int mode) { //DONE
+    public void gossip(String block, int mode) { 
+        // mode 0 : transaction
+        // mode 1: mine
         if(mode == 1){
             for(int i = 0; i < Parameters.nodes.size(); i++){
-                int time_to_recieve = (int)Math.ceil((1-Parameters.pace) * getNode().costs.get(i));
+                int time_to_recieve = (int)Math.ceil((1-Parameters.pace) * getNode().distances.get(i)); // Simulate the latency
                 
                 // Avoid the node to have a transaction with 
                 //itself and the edges that aren't connected to this node
-                if (getNode().costs.get(i) != 0 && getNode().costs.get(i) != Integer.MAX_VALUE) {
+                if (getNode().distances.get(i) != 0 && getNode().distances.get(i) != Integer.MAX_VALUE) {
                     System.out.println("Node " + getNode().id + " is gossiping a block with node " + Parameters.nodes.get(i).id);
                     if(time_to_recieve <= Parameters.edge_value_range){
                         AtomicInteger indx = new AtomicInteger(i);
@@ -76,11 +77,11 @@ public class Node {
         }
         else if (mode == 0){
             for(int i = 0; i < Parameters.nodes.size(); i++){
-                int time_to_recieve = (int)Math.ceil((1-Parameters.pace) * getNode().costs.get(i));
+                int time_to_recieve = (int)Math.ceil((1-Parameters.pace) * getNode().distances.get(i));
                 
                 // Avoid the node to have a transaction with 
                 //itself and the edges that aren't connected to this node
-                if (getNode().costs.get(i) != 0 && getNode().costs.get(i) != Integer.MAX_VALUE) {
+                if (getNode().distances.get(i) != 0 && getNode().distances.get(i) != Integer.MAX_VALUE) {
                     System.out.println("Node " + getNode().id + " is gossiping a transaction with node " + Parameters.nodes.get(i).id);
                     if(time_to_recieve <= Parameters.edge_value_range){
                         AtomicInteger indx = new AtomicInteger(i);
@@ -100,7 +101,7 @@ public class Node {
         }
     }
     
-    public void recieve(String block, int mode) throws InterruptedException { //DONE
+    public void recieve(String block, int mode) throws InterruptedException {
         if(!this.pre_events.contains(block)){
             this.pre_events.add(block);
             if(mode == 1){

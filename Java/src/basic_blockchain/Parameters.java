@@ -7,10 +7,10 @@ public class Parameters {
     public static int edge_value_range = 25;
     public static double prob = 0.2; // The probability that there is no edge between two nodes
     public static double pace = 0.5; // The more pace value would be, the faster everything is done
-    public static int transaction_rate = 5;
-    public static ArrayList<Node> nodes = new ArrayList<>();
+    public static int transaction_rate = 5; // Specifies the time gap between each transaction
+    public static ArrayList<Node> nodes = new ArrayList<>(); // Holds the nodes of whole network
     
-    public static double period_calculator(){
+    public static double period_calculator(){ // Returns the time gap between each mine
         return Parameters.pace * Parameters.nodes.size();
     }
     
@@ -30,8 +30,8 @@ public class Parameters {
         Thread thread = new Thread(() -> {
             lucky_node.gossip(block, 1);
         });
-        thread.start();
         lock.unlock();
+        thread.start();
     }
     
     public static void transact() throws InterruptedException{
@@ -51,15 +51,29 @@ public class Parameters {
             reciever.coins += amount;
             sender.memory_pool += transaction;
             reciever.memory_pool += transaction;
+            sender.pre_events.add(transaction);
+            reciever.pre_events.add(transaction);
             lock.unlock();
             
             System.out.println("A transaction has been occurred between node " + sender.id + " and node " + reciever.id);
-            
-            sender.pre_events.add(transaction);
-            reciever.pre_events.add(transaction);
         }
         else
             System.out.println("Illegal Transaction");
     }
-
+    
+    public static void print_distances(){
+        System.out.println("\n====================================================");
+        for(Node node: Parameters.nodes){
+            String dist;
+            for(int j = 0; j < Parameters.nodes.size(); j++){
+                dist = Integer.toString(node.distances.get(j));
+                if(node.distances.get(j) == Integer.MAX_VALUE)
+                    dist = "\u221E"; 
+                
+                System.out.print(dist + "\t");
+            }
+            System.out.print("\n");
+        }
+        System.out.println("====================================================");
+    }
 }
