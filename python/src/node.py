@@ -8,7 +8,7 @@ from Crypto.PublicKey import RSA
 
 edge_value_range = 25
 # The probability of there is no edge between two nodes
-prob = 0.2
+prob = 0.4
 # pace of gossiping between blocks per unit
 pace = 0.5
 nodes = []
@@ -43,7 +43,7 @@ class Node():
                     self.costs[num] = edge_val
                     # append the edge value to the other vertex of the edge
                     if len(node.costs) <= self.id:
-                        node.costs.append(self.id)
+                        node.costs.append(edge_val)
                     else:
                         node.costs[self.id] = edge_val
                 else:
@@ -51,7 +51,7 @@ class Node():
 
                     # append the edge value to the other vertex of the edge1
                     if len(node.costs) <= self.id:
-                        node.costs.append(self.id)
+                        node.costs.append(sys.maxsize)
                     else:
                         node.costs[self.id] = sys.maxsize
 
@@ -75,7 +75,7 @@ class Node():
                             print("\033[36;1m" + f"node {self.id} is gossiping a block with node {num}" + "\033[0m")
                         else:
 
-                            print(f"node {self.id} is gossiping a transaction (( {strObj} with node {num}")
+                            print(f"node {self.id} is gossiping a transaction (( {strObj} )) with node {num}")
 
                         self.preEvents.append(strObj)
                         th = threading.Thread(target=i.receive, args=(obj, mode, self.costs[num]))

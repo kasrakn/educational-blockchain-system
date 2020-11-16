@@ -63,7 +63,7 @@ public class Node {
                     else if (mode == 0)
                         System.out.println("Node " + getNode().id + " is gossiping a transaction with node " + Parameters.nodes.get(i).id);
 
-                    if(time_to_receive <= Parameters.edge_value_range){
+                    if(time_to_receive <= Parameters.delay * Parameters.edge_value_range){
                         AtomicInteger indx = new AtomicInteger(i);
                         Thread thread = new Thread(() -> {
                             try {

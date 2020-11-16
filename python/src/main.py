@@ -2,6 +2,7 @@ import base64
 import random
 import threading
 import time
+import sys
 
 from Crypto.Hash import SHA256
 from Crypto.Signature import PKCS1_v1_5
@@ -78,6 +79,14 @@ def transact():
         print("\033[35;1m" + "Illegal transaction" + "\033[0m")
 
 
+def print_distances():
+    print('\u001b[36m' + '========' * len(nodes))
+    for node in nodes:
+        for i in range(len(nodes)):
+            cost = node.costs[i] if node.costs[i] < sys.maxsize else u"\u221E"
+            print(cost, end='\t')
+        print()
+    print('========' * len(nodes) + '\033[0m')
 
 
 if __name__ == "__main__":
@@ -100,3 +109,5 @@ if __name__ == "__main__":
         print("\033[31;1m" + "new node added" + "\033[0m")
         for i in nodes:
             i.update_costs()
+
+        print_distances()
