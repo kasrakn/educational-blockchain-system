@@ -20,18 +20,20 @@ public class Parameters {
 
         int randomIndx = random.nextInt(Parameters.nodes.size());
         Node lucky_node = Parameters.nodes.get(randomIndx);
-        System.out.println("\033[32;1m"+ "Congratulations to node " + lucky_node.id + " for being our next miner!" + "\033[0m");
+        if(!"".equals(lucky_node.memory_pool)){
+            System.out.println("\033[32;1m"+ "Congratulations to node " + lucky_node.id + " for being our next miner!" + "\033[0m");
 
-        lock.lock();
-        String block = RSA.sign(lucky_node.memory_pool, lucky_node.keys.getPrivate());
-        System.out.println("Node " + lucky_node.id + " just signed its memory pool! ");
+            lock.lock();
+            String block = RSA.sign(lucky_node.memory_pool, lucky_node.keys.getPrivate());
+            System.out.println("Node " + lucky_node.id + " just signed its memory pool! ");
 
-        lucky_node.pre_events.add(block);
-        Thread thread = new Thread(() -> {
-            lucky_node.gossip(block, 1);
-        });
-        lock.unlock();
-        thread.start();
+            lucky_node.pre_events.add(block);
+            Thread thread = new Thread(() -> {
+                lucky_node.gossip(block, 1);
+            });
+            lock.unlock();
+            thread.start();
+        }
     }
 
     public static void transact() throws InterruptedException{

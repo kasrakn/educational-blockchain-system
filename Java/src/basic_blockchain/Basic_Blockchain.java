@@ -15,7 +15,7 @@ public class Basic_Blockchain {
         System.out.print("Please enter the initial number of nodes: ");
         int nodes_number = scan.nextInt();
         for(int id = 0; id < nodes_number; id++){
-            Node node = new Node(id);
+            new Node(id);
         }
 
         int period = (int)Math.ceil(Parameters.period_calculator());
