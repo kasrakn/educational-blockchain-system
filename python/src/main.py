@@ -9,6 +9,7 @@ from Crypto.Signature import PKCS1_v1_5
 from node import Node, nodes, pace
 
 sem = threading.Semaphore()
+transaction_sem = threading.Semaphore()
 
 def mine():
     # lucky_node: it this term, this node mine a chizi
@@ -48,8 +49,9 @@ def transact():
 
         # in order to prevent the synchronization problems when accessing the 
         # the variables that can be changed by different threads simultaneously
-        while not sem.acquire(blocking=False):
-            pass
+        while not transaction_sem.acquire(blocking=False):
+            print("waiting in the transact semaphore")
+            # pass
         else:
             sender.coin -= amount
             sender.mem_pool.append(transaction)
@@ -59,7 +61,7 @@ def transact():
 
             print("\033[34;1m" + f"a transaction has been occured between node {sender.id} and {receiver.id}" + "\033[0m")
 
-            sem.release()
+            transaction_sem.release()
 
             print("==" * 20)
             ts = threading.Thread(target=sender.gossip, args=(transaction, 0))
