@@ -26,6 +26,7 @@ public class Node {
         this.pre_events = new ArrayList();
         Parameters.nodes.add(this);
         Random random = new Random();
+
         this.coins = 1000;
 
         for(int i = 0; i < Parameters.nodes.size(); i++){
@@ -97,11 +98,7 @@ public class Node {
     }
 
     public void update_distances(){
-        // Time to code: It is your turn to complete this method
-        // This method is doing some stuff in order to update the costs
-
-        // Update the distances in a way to minimize the sum of the
-        // distances of the whole network
+        UpdateDistances.update(Parameters.nodes);
     }
 }
 

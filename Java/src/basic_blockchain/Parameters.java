@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Parameters {
     public static int edge_value_range = 25;
-    public static double prob = 0.2; // The probability that there is no edge between two nodes
+    public static double prob = 0.4; // The probability that there is no edge between two nodes
     public static double delay = 1; // The more delay value would be, the slower everything is done
     public static int transaction_rate = 7; // Specifies the time gap between each transaction
     public static ArrayList<Node> nodes = new ArrayList<>(); // Holds the nodes of whole network
