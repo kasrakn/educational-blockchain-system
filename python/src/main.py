@@ -22,7 +22,7 @@ def mine():
         pass
     else:
         if len(lucky_node.mem_pool) != 0:
-            print("\033[32;1m" + f"Congratulations to node {lucky_node.id} for being our next minner" + "\033[0m")
+            print("\033[32;1m" + f"Congratulations to node {lucky_node.id} for being our next miner" + "\033[0m")
 
             # lucky node signs the block with its private key
             hasher = SHA256.new(str(lucky_node.mem_pool).encode('utf-8'))
