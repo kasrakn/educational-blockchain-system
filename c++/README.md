@@ -6,6 +6,12 @@
 
 <br>
 
+### Download the openssl library
+
+```bash
+wget -O ./lib "https://www.openssl.org/source/openssl-1.1.1h.tar.gz"
+```
+
 ### To install OpenSSL development package on Debian, Ubuntu or their derivatives:
 
 ```bash
