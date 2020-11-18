@@ -40,13 +40,12 @@ def transact():
     # two random sender and receiver from our nodes
     sender = nodes[random.randint(0, len(nodes) - 1)]
     receiver = nodes[random.randint(0, len(nodes) - 1)]
-    print('\n' + f"sender = {sender.id}, receiver = {receiver.id}")
 
     if sender.id != receiver.id:
         amount = random.randint(1, sender.coin)
 
         # the transaction is stored as a string
-        transaction = f"node {sender.id} sent {amount} ----> node{receiver.id}"
+        transaction = f"node {sender.id} sent {amount} ----> node {receiver.id}"
 
         # in order to prevent the synchronization problems when accessing the
         # the variables that can be changed by different threads simultaneously
@@ -108,6 +107,6 @@ if __name__ == "__main__":
         nodes.append(new_node)
         print("\033[31;1m" + "new node added" + "\033[0m")
         for i in nodes:
-            i.update_costs()
+            i.update_costs(i.id, nodes)
 
         print_distances()

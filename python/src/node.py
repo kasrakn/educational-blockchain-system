@@ -6,6 +6,8 @@ import time
 
 from Crypto.PublicKey import RSA
 
+from students_part import cost_minimizer
+
 edge_value_range = 25
 # The probability of there is no edge between two nodes
 prob = 0.4
@@ -99,22 +101,19 @@ class Node():
             if latency < 25:
                 time.sleep(latency)
 
-            if mode == 1:
-                # append the received block to its blockchain
-                self.blocks.append(obj)
-                # remove all items in the memory pool after receiving a block
-                self.mem_pool.clear()
-            else:
-                self.mem_pool.append(obj)
-            time.sleep(0.5)
-            th = threading.Thread(target=self.gossip, args=(obj, mode))
-            th.start()
-            self.sem.release()
-            th.join()
-
+                if mode == 1:
+                    # append the received block to its blockchain
+                    self.blocks.append(obj)
+                    # remove all items in the memory pool after receiving a block
+                    self.mem_pool.clear()
+                else:
+                    self.mem_pool.append(obj)
+                time.sleep(0.5)
+                th = threading.Thread(target=self.gossip, args=(obj, mode))
+                th.start()
+                self.sem.release()
+                th.join()
 
 
     def update_costs(self):
-        # Time to code: It is your turn to complete this method
-        # This method is doing some stuff in order to update the costs
-        pass
+        cost_minimizer(self.id, nodes)
