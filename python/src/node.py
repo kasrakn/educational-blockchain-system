@@ -71,33 +71,31 @@ class Node():
             if strObj not in self.preEvents:
                 for num, i in enumerate(nodes):
                     if num != self.id:
-                        if mode == 1:
-                            print("\033[36;1m" + f"node {self.id} is gossiping a block with node {num}" + "\033[0m")
-                        else:
-
-                            print(f"node {self.id} is gossiping a transaction (( {strObj} )) with node {num}")
-
-                        self.preEvents.append(strObj)
-                        th = threading.Thread(target=i.receive, args=(obj, mode, self.costs[num]))
-                        threads.append(th)
-                        th.start()
-                        self.sem.release()
+                        latency = int(self.costs[num] * pace)
+                        if latency < 25:
+                            self.preEvents.append(strObj)
+                            th = threading.Thread(target=i.receive, args=(obj, mode, latency))
+                            threads.append(th)
+                            th.start()
+                            self.sem.release()
+                            if mode == 1:
+                                print("\033[36;1m" + f"node {self.id} is gossiping a block with node {num}" + "\033[0m")
+                            else:
+                                print(f"node {self.id} is gossiping a transaction (( {strObj} )) with node {num}")
 
         # join the threads to the current parent thread
         for t in threads:
             t.join()
 
 
-    def receive(self, obj, mode, cost_needed):
+    def receive(self, obj, mode, latency):
         # It is just for the simulating the latency of the network
-        latency = int(cost_needed * pace)
 
         while not self.sem.acquire(blocking=False):
             pass
         else:
             # this if placed just to prevent the overflow problem
-            if latency < 25:
-                time.sleep(latency)
+            time.sleep(latency)
 
             if mode == 1:
                 # append the received block to its blockchain

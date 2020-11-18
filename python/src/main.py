@@ -15,7 +15,6 @@ transaction_sem = threading.Semaphore()
 def mine():
     # lucky_node: it this term, this node mine a chizi
     luck_num = random.randint(0, len(nodes) - 1)
-    print(f'lucky = {luck_num}, len nodes = {len(nodes)}')
     lucky_node = nodes[luck_num]
 
     while not sem.acquire(blocking=False):
@@ -29,7 +28,7 @@ def mine():
             signer = PKCS1_v1_5.new(lucky_node.key)
             block = signer.sign(hasher)
             sem.release()
-
+            lucky_node.coin += 7
             # now the lucky node start gossiping to other nodes
             th = threading.Thread(target=lucky_node.gossip, args=(block, 1))
             th.start()
@@ -40,7 +39,6 @@ def transact():
     # two random sender and receiver from our nodes
     sender = nodes[random.randint(0, len(nodes) - 1)]
     receiver = nodes[random.randint(0, len(nodes) - 1)]
-    print('\n' + f"sender = {sender.id}, receiver = {receiver.id}")
 
     if sender.id != receiver.id:
         amount = random.randint(1, sender.coin)
@@ -60,7 +58,7 @@ def transact():
             receiver.coin += amount
             receiver.mem_pool.append(transaction)
 
-            print("\033[34;1m" + f"a transaction has been occurred between node {sender.id} and {receiver.id}" + "\033[0m")
+            print("\033[34;1m" + f"a transaction has occurred between node {sender.id} and {receiver.id}" + "\033[0m")
 
             transaction_sem.release()
 
@@ -79,7 +77,7 @@ def transact():
         print("\033[35;1m" + "Illegal transaction" + "\033[0m")
 
 
-def print_distances():
+def print_costs():
     print('\u001b[36m' + '========' * len(nodes))
     for node in nodes:
         for i in range(len(nodes)):
@@ -110,4 +108,4 @@ if __name__ == "__main__":
         for i in nodes:
             i.update_costs()
 
-        print_distances()
+        print_costs()
