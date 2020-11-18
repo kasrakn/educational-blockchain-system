@@ -46,9 +46,9 @@ public class Basic_Blockchain {
             lock.lock();
             new Node((Parameters.nodes.size()));
             for(Node node: Parameters.nodes)
-                node.update_distances();
+                node.update_costs();
 
-            Parameters.print_distances();
+            Parameters.print_costs();
             lock.unlock();
         }
     }
