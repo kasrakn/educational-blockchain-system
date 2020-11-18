@@ -10,9 +10,9 @@ import java.util.logging.Logger;
 
 public class Node {
     String memory_pool;
-    Map<Integer, Integer> distances;
+    Map<Integer, Integer> costs;
     ArrayList<String> blocks;
-    ArrayList<String> pre_events; // This will be used to prevents stucking in loops while gossiping/recieving
+    ArrayList<String> pre_events; // This will be used to prevents getting stuck in loops while gossiping/receiving
     final int id;
     KeyPair keys; // Includes a private key and a public key
     int coins;
@@ -21,7 +21,7 @@ public class Node {
         this.id = id;
         keys = RSA.generateKeyPair();
         memory_pool = new String();
-        this.distances = new HashMap<>();
+        this.costs = new HashMap<>();
         this.blocks = new ArrayList();
         this.pre_events = new ArrayList();
         Parameters.nodes.add(this);
@@ -30,18 +30,18 @@ public class Node {
         this.coins = 1000;
 
         for(int i = 0; i < Parameters.nodes.size(); i++){
-            int edge_dist;
-            edge_dist = 1+random.nextInt(Parameters.edge_value_range);
+            int edge_cost;
+            edge_cost = 1+random.nextInt(Parameters.edge_value_range);
 
-            if(edge_dist <= Parameters.edge_value_range*Parameters.prob){ // Make an edge between this node and node[i]
-                Parameters.nodes.get(this.id).distances.put(i, edge_dist);
-                Parameters.nodes.get(i).distances.put(this.id, edge_dist);
+            if(edge_cost <= Parameters.edge_value_range*Parameters.prob){ // Make an edge between this node and node[i]
+                Parameters.nodes.get(this.id).costs.put(i, edge_cost);
+                Parameters.nodes.get(i).costs.put(this.id, edge_cost);
             }
             else{
-                Parameters.nodes.get(this.id).distances.put(i, Integer.MAX_VALUE);
-                Parameters.nodes.get(i).distances.put(this.id, Integer.MAX_VALUE);
+                Parameters.nodes.get(this.id).costs.put(i, Integer.MAX_VALUE);
+                Parameters.nodes.get(i).costs.put(this.id, Integer.MAX_VALUE);
             }
-            this.distances.put(this.id, 0);
+            this.costs.put(this.id, 0);
         }
         System.out.println("\033[31;1m" + "Node " + id + " has been initialized..." + "\033[0m");
     }
@@ -54,15 +54,15 @@ public class Node {
         // mode 0 : transaction
         // mode 1: mine
             for(int i = 0; i < Parameters.nodes.size(); i++){
-                int time_to_receive = (int)Math.ceil(Parameters.delay * getNode().distances.get(i)); // Simulate the latency
+                int time_to_receive = (int)Math.ceil(Parameters.delay * getNode().costs.get(i)); // Simulate the latency
 
                 // Avoid the node to have a transaction with
-                //itself and the edges that aren't connected to this node
-                if (getNode().distances.get(i) != 0 && getNode().distances.get(i) != Integer.MAX_VALUE) {
+                // itself and the edges that aren't connected to this node
+                if (getNode().costs.get(i) != 0 && getNode().costs.get(i) != Integer.MAX_VALUE) {
                     if(mode == 1)
                         System.out.println("Node " + getNode().id + " is gossiping a block with node " + Parameters.nodes.get(i).id);
                     else if (mode == 0)
-                        System.out.println("Node " + getNode().id + " is gossiping a transaction with node " + Parameters.nodes.get(i).id);
+                        System.out.println("Node " + getNode().id + " is gossiping a transaction: { " + block + " } with node " + Parameters.nodes.get(i).id);
 
                     if(time_to_receive <= Parameters.delay * Parameters.edge_value_range){
                         AtomicInteger indx = new AtomicInteger(i);
@@ -97,8 +97,8 @@ public class Node {
         }
     }
 
-    public void update_distances(){
-        UpdateDistances.update(Parameters.nodes);
+    public void update_costs(){
+        UpdateCosts.costMinimizer(this.id, Parameters.nodes);
     }
 }
 

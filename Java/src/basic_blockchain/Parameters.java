@@ -26,7 +26,7 @@ public class Parameters {
             lock.lock();
             String block = RSA.sign(lucky_node.memory_pool, lucky_node.keys.getPrivate());
             System.out.println("Node " + lucky_node.id + " just signed its memory pool! ");
-
+            lucky_node.coins += 7;
             lucky_node.pre_events.add(block);
             Thread thread = new Thread(() -> {
                 lucky_node.gossip(block, 1);
@@ -57,22 +57,28 @@ public class Parameters {
             receiver.pre_events.add(transaction);
             lock.unlock();
 
-            System.out.println("\033[34;1m" + "A transaction has been occurred between node " + sender.id + " and node " + receiver.id + "\033[0m");
+            Thread sender_gossip_thread = new Thread(() -> { sender.gossip(transaction, 0); });
+            Thread receiver_gossip_thread = new Thread(() -> { receiver.gossip(transaction, 0); });
+
+            sender_gossip_thread.start();
+            receiver_gossip_thread.start();
+
+            System.out.println("\033[34;1m" + "A transaction has occurred between node " + sender.id + " and node " + receiver.id + "\033[0m");
         }
         else
             System.out.println("\033[35;1m" + "Illegal Transaction" + "\033[0m");
     }
 
-    public static void print_distances(){
+    public static void print_costs(){
         System.out.println("\033[34;1m" + "====================================================");
         for(Node node: Parameters.nodes){
-            String dist;
+            String cost;
             for(int j = 0; j < Parameters.nodes.size(); j++){
-                dist = Integer.toString(node.distances.get(j));
-                if(node.distances.get(j) == Integer.MAX_VALUE)
-                    dist = "\u221E";
+                cost = Integer.toString(node.costs.get(j));
+                if(node.costs.get(j) == Integer.MAX_VALUE)
+                    cost = "\u221E";
 
-                System.out.print(dist + "\t");
+                System.out.print(cost + "\t");
             }
             System.out.print("\n");
         }
