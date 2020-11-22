@@ -1,0 +1,12 @@
+certifi==2020.6.20
+chardet==3.0.4
+crypto==1.4.1
+idna==2.10
+Naked==0.1.31
+pyasn1==0.4.8
+pycrypto==2.6.1
+PyYAML==5.3.1
+requests==2.24.0
+rsa==4.6
+shellescape==3.8.1
+urllib3==1.25.11
