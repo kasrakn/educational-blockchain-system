@@ -1,10 +1,11 @@
 #include <iostream>
-#include <stdio.h> 
-#include <stdlib.h> 
-#include<time.h> 
-#include <functional> 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <functional>
 #include <mutex>
-#include <Node.h>
+#include <vector>
+#include "Node.h"
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
 #include <openssl/sha.h>
@@ -20,8 +21,8 @@ private:
 public:
     const int edgeValueRange = 25;      // maximum value that can be assigned to an edge.
     const float prob = 0.4;             // the probability that there is a direct edge between two nodes.
-    const transactionRate = 3;          // the time to wait for next transaction.
-    const mineRate = 8;                 // the time to wait for next mine (if the selected node has can do the mine)
+    const int transactionRate = 3;          // the time to wait for next transaction.
+    const int mineRate = 8;                 // the time to wait for next mine (if the selected node has can do the mine)
     vector<Node> nodes;                 // all nodes in the system are stored at this vector.
     mutex mineMutex;
     mutex transactinonMutex;
@@ -43,11 +44,11 @@ void System::mine(){
     Node luckyNode = this->nodes[luck_num];
 
     // lock the mutex to prevent other nodes to access it.
-    m.lock();           
+    m.lock();
     sh
     if (luckyNode.memPool.size() != 0){
-        cout << "Congratulations to node " 
-             << luckNum 
+        cout << "Congratulations to node "
+             << luckNum
              << "for being our next miner"
              << endl;
 
@@ -56,7 +57,7 @@ void System::mine(){
         string hashedMemPool = hasher(this->memPool);
         RSA *r = NULL;
         r = RSA_new()
-        
+
 
     }
 

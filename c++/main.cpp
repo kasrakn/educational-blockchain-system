@@ -3,6 +3,7 @@
 #include <time.h>
 #include <thread>
 #include <random>
+#include "Node.h"
 
 using namespace std;
 
@@ -13,8 +14,7 @@ int main(){
 
     // initial nodes
     for (int i = 0; i < nodesNo; i++){
-        node = Node(i);
-        nodes
+        Node node = new Node(i);
     }
 
 
