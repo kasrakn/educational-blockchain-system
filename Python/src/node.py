@@ -99,18 +99,18 @@ class Node():
             # this if placed just to prevent the overflow problem
             time.sleep(latency)
 
-                if mode == 1:
-                    # append the received block to its blockchain
-                    self.blocks.append(obj)
-                    # remove all items in the memory pool after receiving a block
-                    self.mem_pool.clear()
-                else:
-                    self.mem_pool.append(obj)
-                time.sleep(0.5)
-                th = threading.Thread(target=self.gossip, args=(obj, mode))
-                th.start()
-                self.sem.release()
-                th.join()
+            if mode == 1:
+                # append the received block to its blockchain
+                self.blocks.append(obj)
+                # remove all items in the memory pool after receiving a block
+                self.mem_pool.clear()
+            else:
+                self.mem_pool.append(obj)
+            time.sleep(0.5)
+            th = threading.Thread(target=self.gossip, args=(obj, mode))
+            th.start()
+            self.sem.release()
+            th.join()
 
 
     def update_costs(self):
