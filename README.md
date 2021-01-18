@@ -17,4 +17,4 @@ This blockchain system is available in two programming languages: `Java` and `Py
 The most impressive property of this system (which is available in both languages) is `Multithreading`. Handling different threads and their critical section was the most challenging and also attractive part of this project.
 
 ### How it looks?
-![Demo](Demo.gif)
+<img src="Demo.gif" width="50%">
