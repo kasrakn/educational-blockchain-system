@@ -106,6 +106,6 @@ if __name__ == "__main__":
         nodes.append(new_node)
         print("\033[31;1m" + "new node added" + "\033[0m")
         for i in nodes:
-            i.update_costs(i.id, nodes)
+            i.update_costs()
 
         print_costs()
