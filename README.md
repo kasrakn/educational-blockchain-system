@@ -10,7 +10,7 @@ In addition to paying attention to fulfill the correct logic, to look more attra
 The educational part is a function that is supposed to be completed by the students in a way when it is called, the overall cost (distance) of the whole network takes a step to be decreased (graph shortest path algorithms)
 
 ### About
-In this project, we (@behzadshomali and @kasra76) simulated a basic blockchain system for educational purposes.
+In this project, we simulated a basic blockchain system for educational purposes.
 
 This blockchain system is available in two programming languages: `Java` and `Python`.
 @kasra76 was responsible for the Python section and @behzadshomali developed the Java part.
