@@ -13,7 +13,6 @@ The educational part is a function that is supposed to be completed by the stude
 In this project, we simulated a basic blockchain system for educational purposes.
 
 This blockchain system is available in two programming languages: `Java` and `Python`.
-@kasra76 was responsible for the Python section and @behzadshomali developed the Java part.
 The most impressive property of this system (which is available in both languages) is `Multithreading`. Handling different threads and their critical section was the most challenging and also attractive part of this project.
 
 ### How it looks?
